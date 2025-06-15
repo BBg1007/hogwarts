@@ -1,6 +1,7 @@
 package com.example.school.service;
 
 import com.example.school.model.Faculty;
+import com.example.school.model.Student;
 import com.example.school.repositories.FacultyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,5 +41,18 @@ public class FacultyService {
     public Collection<Faculty> getAllFaculties() {
         return facultyRepository.findAll();
     }
+
+    @Transactional
+    public Faculty findByColorIgnoreCaseOrNameIgnoreCase(String color, String name) {
+        return facultyRepository.findByColorIgnoreCaseOrNameIgnoreCase(color, name);
+    }
+
+    @Transactional
+    public Collection<Student>getAllStudents(Long id) {
+        return facultyRepository.findById(id).get().getStudents();
+    }
+
+
+
 
 }

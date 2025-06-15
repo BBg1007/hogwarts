@@ -1,11 +1,10 @@
 package com.example.school.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import org.springframework.data.annotation.Version;
 
+import java.util.Collection;
 import java.util.Objects;
 
 @Entity
@@ -18,6 +17,13 @@ public class Faculty {
     private String color;
     @Version
     private int version;
+    @OneToMany(mappedBy = "faculty")
+    @JsonIgnore
+    private Collection<Student> students;
+
+    public Collection<Student> getStudents() {
+        return students;
+    }
 
     public Faculty(Long id, String name, String color) {
         this.id = id;

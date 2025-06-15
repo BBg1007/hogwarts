@@ -1,6 +1,7 @@
 package com.example.school.controller;
 
 import com.example.school.model.Faculty;
+import com.example.school.model.Student;
 import com.example.school.service.FacultyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,14 +55,21 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getAllFaculties());
     }
 
-    @GetMapping("/by-color/{color}")
-    public ResponseEntity<Collection<Faculty>> foundFacultiesByColor(@PathVariable String color) {
-        List<Faculty> result = facultyService.getAllFaculties().stream()
-                .filter(faculty -> faculty.getColor().equalsIgnoreCase(color))
-                .toList();
-        if (result.isEmpty()) {
+    @GetMapping("/by-color")
+    public ResponseEntity<Faculty> foundFacultiesByColorOrName(@RequestParam(required = false) String color,
+                                                                           @RequestParam(required = false) String name){
+        if (((color != null) && !color.isBlank()) || ((name != null) && !name.isBlank())) {
+           return ResponseEntity.ok(facultyService.findByColorIgnoreCaseOrNameIgnoreCase(color,name));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/students/{id}")
+    public ResponseEntity<Collection<Student>> getAllStudents(@PathVariable Long id) {
+        if (facultyService.getFaculty(id) == null) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(facultyService.getAllStudents(id));
     }
+
 }
