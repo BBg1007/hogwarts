@@ -1,5 +1,6 @@
 package com.example.school.controller;
 
+import com.example.school.model.Faculty;
 import com.example.school.model.Student;
 import com.example.school.service.StudentService;
 import org.springframework.http.ResponseEntity;
@@ -55,14 +56,26 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getAllStudents());
     }
 
-    @GetMapping("/by-age/{age}")
-    public ResponseEntity<Collection<Student>> foundStudentByAge(@PathVariable int age) {
-        List<Student> result = studentService.getAllStudents().stream()
-                .filter(student -> student.getAge() == age)
-                .toList();
-        if (result.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    @GetMapping("/by-age")
+    public ResponseEntity<Collection<Student>> foundStudentByAge(@RequestParam(required = false,defaultValue = "0") int age,
+                                                                 @RequestParam(required = false,defaultValue = "0") int minAge,
+                                                                 @RequestParam(required = false,defaultValue = "0") int maxAge) {
+
+        if (age != 0) {
+            return ResponseEntity.ok(studentService.findByAge(age));
         }
-        return ResponseEntity.ok(result);
+        if (minAge != 0 && maxAge != 0) {
+            return ResponseEntity.ok(studentService.findByAgeBetween(minAge,maxAge));
+        }
+        return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping("/faculty")
+    public ResponseEntity<Faculty> getStudentFaculty(@RequestParam(required = false,defaultValue = "0") Long id) {
+        if (id != null) {
+
+            return ResponseEntity.ok(studentService.getStudent(id).getFaculty());
+        }
+        return ResponseEntity.badRequest().build();
     }
 }
