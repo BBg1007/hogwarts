@@ -3,11 +3,13 @@ package com.example.school.controller;
 import com.example.school.model.Faculty;
 import com.example.school.model.Student;
 import com.example.school.service.FacultyService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/faculty")
@@ -19,12 +21,13 @@ public class FacultyController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Faculty> getFaculty(@PathVariable Long id) {
-        Faculty faculty = facultyService.getFaculty(id);
-        if (faculty == null) {
+    public ResponseEntity<Faculty> findFaculty(@PathVariable Long id) {
+        try {
+          Faculty faculty =  facultyService.getFaculty(id);
+            return ResponseEntity.ok(faculty);
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(faculty);
     }
 
     @PostMapping
@@ -43,8 +46,12 @@ public class FacultyController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteFaculty(@PathVariable Long id) {
-        facultyService.deleteFaculty(id);
-        return ResponseEntity.ok().build();
+        try {
+            facultyService.deleteFaculty(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping
@@ -55,7 +62,7 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getAllFaculties());
     }
 
-    @GetMapping("/by-color")
+    @GetMapping("/byColorOrName")
     public ResponseEntity<Faculty> foundFacultiesByColorOrName(@RequestParam(required = false) String color,
                                                                            @RequestParam(required = false) String name){
         if (((color != null) && !color.isBlank()) || ((name != null) && !name.isBlank())) {
@@ -64,7 +71,7 @@ public class FacultyController {
         return ResponseEntity.badRequest().build();
     }
 
-    @GetMapping("/students/{id}")
+    @GetMapping("/{id}/students")
     public ResponseEntity<Collection<Student>> getAllStudents(@PathVariable Long id) {
         if (facultyService.getFaculty(id) == null) {
             return ResponseEntity.notFound().build();

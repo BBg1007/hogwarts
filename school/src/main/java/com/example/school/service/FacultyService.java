@@ -3,10 +3,12 @@ package com.example.school.service;
 import com.example.school.model.Faculty;
 import com.example.school.model.Student;
 import com.example.school.repositories.FacultyRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.NoSuchElementException;
 
 @Service
 public class FacultyService {
@@ -24,7 +26,7 @@ public class FacultyService {
 
     @Transactional
     public Faculty getFaculty(Long id) {
-        return facultyRepository.findById(id).get();
+        return facultyRepository.findById(id).orElseThrow(()->new EntityNotFoundException());
     }
 
     @Transactional
@@ -34,7 +36,9 @@ public class FacultyService {
 
     @Transactional
     public void deleteFaculty(long id) {
-        facultyRepository.deleteById(id);
+        Faculty faculty = facultyRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException());
+        facultyRepository.delete(faculty);
     }
 
     @Transactional
