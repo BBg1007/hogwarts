@@ -3,14 +3,14 @@ package com.example.school.controller;
 import com.example.school.model.Faculty;
 import com.example.school.model.Student;
 import com.example.school.service.StudentService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.List;
 
 @RestController
-@RequestMapping("students")
+@RequestMapping("/students")
 public class StudentController {
     private final StudentService studentService;
 
@@ -19,13 +19,13 @@ public class StudentController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Student> getStudent(@PathVariable Long id) {
-        Student student = studentService.getStudent(id);
-
-        if (student == null) {
+    public ResponseEntity<Student> findStudent(@PathVariable Long id) {
+        try {
+            Student student =  studentService.getStudent(id);
+            return ResponseEntity.ok(student);
+        } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(student);
     }
 
     @PostMapping
@@ -44,8 +44,12 @@ public class StudentController {
 
     @DeleteMapping("{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
-        studentService.deleteStudent(id);
-        return ResponseEntity.ok().build();
+        try {
+            studentService.deleteStudent(id);
+            return ResponseEntity.ok().build();
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping
@@ -72,10 +76,12 @@ public class StudentController {
 
     @GetMapping("/faculty")
     public ResponseEntity<Faculty> getStudentFaculty(@RequestParam(required = false,defaultValue = "0") Long id) {
-        if (id != null) {
-
-            return ResponseEntity.ok(studentService.getStudent(id).getFaculty());
+        try {
+            Student student = studentService.getStudent(id);
+            return ResponseEntity.ok(studentService.getFaculty(id));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.badRequest().build();
+
     }
 }

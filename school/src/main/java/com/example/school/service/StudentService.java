@@ -1,7 +1,9 @@
 package com.example.school.service;
 
+import com.example.school.model.Faculty;
 import com.example.school.model.Student;
 import com.example.school.repositories.StudentRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +24,7 @@ public class StudentService {
 
     @Transactional
     public Student getStudent(Long id) {
-        return studentRepository.findById(id).get();
+        return studentRepository.findById(id).orElseThrow(()->new EntityNotFoundException());
     }
 
     @Transactional
@@ -32,6 +34,7 @@ public class StudentService {
 
     @Transactional
     public void deleteStudent(long id) {
+        Student student = studentRepository.findById(id).orElseThrow(()->new EntityNotFoundException());
         studentRepository.deleteById(id);
     }
 
@@ -47,5 +50,9 @@ public class StudentService {
 
     public Collection<Student> findByAge(int age) {
         return studentRepository.findByAge(age);
+    }
+
+    public Faculty getFaculty(Long id) {
+        return studentRepository.findById(id).get().getFaculty();
     }
 }
