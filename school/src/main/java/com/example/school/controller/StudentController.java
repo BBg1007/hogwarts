@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
+import java.util.List;
 
 @RestController
 @RequestMapping("/students")
@@ -82,6 +83,31 @@ public class StudentController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.notFound().build();
         }
+    }
+    @GetMapping("/count")
+    public ResponseEntity<Integer> getStudentsCount() {
+        int total = studentService.getStudentsCount();
+        if (total == 0) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(total);
+    }
 
+    @GetMapping("/age-average")
+    public ResponseEntity<Integer> getAverageAge() {
+        int avg = studentService.getAverageAge();
+        if (avg == 0) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(avg);
+    }
+
+    @GetMapping("/last/{number}")
+    public ResponseEntity<List<Student>> getLastStudents(@PathVariable int number) {
+        List<Student> lastStudents = studentService.getLastStudents(number);
+        if (lastStudents.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(lastStudents);
     }
 }
