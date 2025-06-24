@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.List;
 
 @Service
 public class StudentService {
@@ -54,5 +55,17 @@ public class StudentService {
 
     public Faculty getFaculty(Long id) {
         return studentRepository.findById(id).get().getFaculty();
+    }
+
+    public int getStudentsCount() {
+        return studentRepository.getStudentsCount();
+    }
+
+    public int getAverageAge() {
+        return studentRepository.getAverageAge();
+    }
+
+    public List<Student>getLastStudents(int numberOfStudents) {
+        return studentRepository.getLastStudents(numberOfStudents);
     }
 }
