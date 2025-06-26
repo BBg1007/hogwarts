@@ -3,6 +3,7 @@ package com.example.school.controller;
 import com.example.school.model.Faculty;
 import com.example.school.model.Student;
 import com.example.school.service.StudentService;
+import com.example.school.util.LogHelper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +26,7 @@ public class StudentController {
             Student student =  studentService.getStudent(id);
             return ResponseEntity.ok(student);
         } catch (EntityNotFoundException e) {
+            LogHelper.logExceptionsLvlError(e,id);
             return ResponseEntity.notFound().build();
         }
     }
@@ -49,6 +51,7 @@ public class StudentController {
             studentService.deleteStudent(id);
             return ResponseEntity.ok().build();
         } catch (EntityNotFoundException e) {
+            LogHelper.logExceptionsLvlError(e,id);
             return ResponseEntity.notFound().build();
         }
     }
@@ -81,6 +84,7 @@ public class StudentController {
             Student student = studentService.getStudent(id);
             return ResponseEntity.ok(studentService.getFaculty(id));
         } catch (EntityNotFoundException e) {
+            LogHelper.logExceptionsLvlError(e,id);
             return ResponseEntity.notFound().build();
         }
     }
