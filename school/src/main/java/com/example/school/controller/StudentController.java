@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -114,4 +115,22 @@ public class StudentController {
         }
         return ResponseEntity.ok(lastStudents);
     }
-}
+
+    @GetMapping("by-letter/{letter}")
+    public ResponseEntity<List<String>> getStudentsWithNameStartsWith(@PathVariable String letter) {
+        List<String> students = studentService.filterNamesByFirstLetterToUpperCaseAndNaturalOrder(letter);
+        if (students.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/averageAge")
+    public ResponseEntity<Integer> getAverageAgeByStream() {
+        int averageAge = studentService.getAverageAge();
+        if (averageAge <= 0) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(averageAge);
+    }
+ }

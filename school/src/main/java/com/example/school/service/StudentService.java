@@ -11,7 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.OptionalDouble;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -83,4 +86,22 @@ public class StudentService {
         LogHelper.logMethodAndArgsLvlDebug("getLastStudents");
         return studentRepository.getLastStudents(numberOfStudents);
     }
+
+    public List<String>filterNamesByFirstLetterToUpperCaseAndNaturalOrder(String firstLetter) {
+       return getAllStudents().stream()
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .filter(s->s.startsWith(firstLetter.toUpperCase()))
+                .sorted(Comparator.naturalOrder())
+               .collect(Collectors.toList());
+    }
+
+    public OptionalDouble getAverageAgeOfStudents() {
+        return getAllStudents().stream()
+                .mapToInt(Student::getAge)
+                .average();
+    }
+
+
+
 }

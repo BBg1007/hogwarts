@@ -11,6 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Optional;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 @Service
 public class FacultyService {
@@ -66,7 +70,13 @@ public class FacultyService {
         return facultyRepository.findById(id).get().getStudents();
     }
 
+    public String getLongestFacultyName() {
+       return getAllFaculties().stream().max(Comparator.comparing(faculty -> faculty.getName().length())).get().getName();
+    }
 
-
-
+    public int getSumOneToMillion() {
+        return IntStream.iterate(1,a->a+1)
+                .limit(1_000_000)
+                .sum();
+    }
 }
