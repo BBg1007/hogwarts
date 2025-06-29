@@ -81,4 +81,20 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getAllStudents(id));
     }
 
+    @GetMapping("/longestName")
+    public ResponseEntity<String> getLongestName() {
+        String longestName = facultyService.getLongestFacultyName();
+        if (longestName.isEmpty() || longestName.isBlank()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(longestName);
+        }
+
+
+    @GetMapping("/getSum")
+    public int getSum(){
+        return facultyService.getSumOneToMillion();
+    }
+
+
 }
